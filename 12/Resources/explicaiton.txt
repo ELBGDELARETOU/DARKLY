@@ -1,0 +1,37 @@
+expliaction:
+
+Dans ce CTF, nous avons cherché des fichiers cachés. Pour cela, j’ai utilisé une wordlist identique à celle de dirb, 
+qui effectue ce travail automatiquement. Le script teste les pages les plus courantes.
+
+Cependant, sur Darkly, même les pages inexistantes renvoient un code HTTP 200, comme si elles existaient 
+réellement. Nous devons donc comparer la taille de la réponse. Les fichiers inexistants renverront une page générique 
+dont la taille sera identique, ce qui permet de les filtrer. Voici le script :
+
+#!/bin/bash
+
+url="http://localhost:8080/"
+wordlist="wordlist.txt"            
+
+# Récupère la taille d'une page fausse (ex: page inconnue)
+baseline_size=$(curl -s -o /dev/null -w "%{size_download}" "${url}thispagedoesnotexist")
+
+echo "Taille baseline des fausses pages : $baseline_size bytes"
+
+while read line; do
+    size=$(curl -s -o /dev/null -w "%{size_download}" "$url$line")
+
+    if [ "$size" != "$baseline_size" ]; then
+        echo "[+] Trouvé différent : $url$line ($size bytes)"
+    fi
+done < "$wordlist"
+
+Une fois cela fait, on obtient la liste des pages existantes mais non accessibles directement depuis la page principale. 
+Dans cette liste, ce qui nous intéresse est admin et robots.txt.
+En allant sur robots.txt, on voit deux lignes. On récupère la première, qui nous mène vers un site où l’on peut télécharger 
+un fichier nommé .htpasswd. Dans ce fichier, on trouve : "root:437394baff5aa33daa618be47b75cb49"
+Le mot de passe est hashé en MD5. Après déchiffrement, on obtient : qwerty123@.
+
+Il ne reste plus qu’à aller sur la page /admin/ et se connecter en tant que root.
+
+solution:
+-ne jamais exposer des fichier sensible

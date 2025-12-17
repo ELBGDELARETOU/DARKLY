@@ -1,0 +1,12 @@
+epxlication:
+
+Les identifiants sont envoyés dans l’URL en utilisant une méthode GET et non POST,
+tout est donc visible dans l’URL. Il suffit de faire un script Python qui, en calquant l’URL,
+va en boucle envoyer des requêtes GET pour tester tout un tas de mots de passe depuis
+rockyou, qui est une base de données de mots de passe les plus souvent utilisés.
+
+solution:
+-utiliser POST et non GET
+-etre en https
+-2FA
+-limiter le nombre d essaie de connexion

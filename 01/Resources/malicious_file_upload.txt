@@ -1,0 +1,16 @@
+explication :
+
+Cette ligne permet d’uploader un fichier en utilisant CURL. Depuis le site, les seules extensions acceptées sont JPG et JPEG. Les codes malveillants les plus utilisés sont en PHP. Normalement, les sites les protègent en vérifiant le type MIME, l’extension, les magic bytes qui sont les 4 premiers octets du fichier, ou même parfois le contenu complet.
+Contrairement au site qui, lui, vérifie seulement l’extension, car le reste est automatiquement géré par le navigateur. Une extension comme : lol.php.jpg fonctionne, mais depuis CURL, il faut modifier le type depuis la requête : type=image/jpeg, car curl met le type réel du fichier uploadé.
+
+Dans notre cas, le GIF ne sert à rien, mais il est souvent utilisé pour bypass la vérification des magic bytes.
+
+-X sert à forcer le type de la requête, exemple : POST, GET, etc.
+-F sert à remplacer une partie du champ de la requête, dans notre cas Upload et uploaded.
+
+solution :
+
+-refuser toute requête venant du fichier /upload
+-parser la requête pour être sûr d’accepter seulement les extensions demandées, exemple : .jpeg, .jpg, .png, etc.
+-vérifier le contenu du fichier
+-renommer le fichier une fois téléchargé pour éviter les mauvaises extensions

@@ -1,0 +1,8 @@
+explication :
+
+Ici, le problème est que les valeurs ne sont pas protégées. On peut donc récupérer la requête
+et, en utilisant une commande curl, modifier la valeur qui, théoriquement, ne peut pas être supérieure
+à 10.
+
+solution :
+– toujours valider les données côté serveur
