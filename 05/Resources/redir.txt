@@ -1,15 +1,40 @@
-http://localhost:8080/index.php?page=redirect&site=youtube.fr
+REDIRECTION     
 
+EXPLICATION :
+Le site ne contrôle pas les destinations de ses redirections, ce qui 
+permet de renvoyer l'utilisateur vers n'importe quel site externe. 
 
-explication (OPEN REDIRECT) :
+L'URL vulnérable est souvent identifiée via les outils de développement 
+(F12) en observant comment le paramètre de destination est traité.
 
-Le site ne contrôle pas les redirections, on peut donc rediriger vers n’importe quel site.
-L’URL est trouvée en faisant F12 et en modifiant le site d’arrivée.
-Cette faille est le plus souvent utilisée pour du phishing, donnant confiance à l’utilisateur en voyant une URL avec un site de “confiance”, mais qui redirige vers un site malveillant.
-La solution pour éviter ça serait de faire une liste qui énumère les sites exacts vers lesquels nous avons le droit de rediriger.
-On peut aussi passer par une page supplémentaire qui nous avertit que nous changeons de site et qu’il faut faire attention.
+COMMANDE CURL POUR TESTER :
+curl -I "http://localhost:8080/index.php?page=redirect&site=http://malveillant.com"
 
-solution :
--utilisée une liste de site autoriser
--ajouter une page de d avertissement avant la redirections
--faire des redirection interne (chemins en dure gerer par le back)
+(L'option -I permet de voir l'en-tête "Location" dans la réponse HTTP 
+qui confirme la redirection vers le site externe).
+
+DANGERS :
+Cette faille est principalement utilisée pour des attaques de Phishing 
+(hameçonnage). L'attaquant envoie un lien commençant par un domaine de 
+confiance, ce qui rassure la victime, mais le paramètre "site" redirige 
+en réalité vers une copie malveillante du site pour voler des identifiants.
+
+SOLUTIONS :
+1. Utiliser une "Whitelist" (liste blanche)
+   - Créer une liste de domaines autorisés et rejeter systématiquement 
+     toute redirection vers un site hors de cette liste.
+
+2. Page d'avertissement intermédiaire
+   - Avant la redirection, afficher une page informant l'utilisateur 
+     qu'il quitte le site actuel, en affichant l'URL de destination 
+     complète.
+
+3. Redirections internes uniquement
+   - Préférer des chemins relatifs (ex: site=/dashboard) gérés 
+     directement par le backend, plutôt que d'accepter des URL 
+     absolues (http://...).
+
+4. Utiliser des identifiants (ID)
+   - Au lieu de passer l'URL en paramètre, passer un ID (ex: site=1) 
+     que le serveur traduit ensuite en une URL sûre stockée en base 
+     de données.

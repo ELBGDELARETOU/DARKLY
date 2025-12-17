@@ -1,17 +1,32 @@
-http://localhost:8080/?page=../../../../../../../../../etc/passwd
+LOCAL FILE INCLUSION (LFI)
 
-explication :
+URL : http://localhost:8080/?page=../../../../../../../../../etc/passwd
 
-Ce qui se passe ici, c’est un LFI (Local File Inclusion). C’est un test classique pour vérifier la vulnérabilité et la bonne gestion
-du système de pages sur le site. La méthode $_GET, qui permet de naviguer entre les pages, n’est pas protégée,
-on peut donc facilement remonter dans l’arborescence du serveur pour avoir accès aux fichiers du site,
-par exemple : /etc/passwd, /var/log, etc.
+EXPLICATION :
+Ce qui se passe ici est une LFI (Local File Inclusion). C’est un test 
+classique pour vérifier la vulnérabilité et la bonne gestion du 
+système de pages sur le site. 
+
+La méthode $_GET, qui permet de naviguer entre les pages, n’est pas 
+protégée : on peut donc facilement remonter dans l’arborescence du 
+serveur pour accéder à des fichiers sensibles du système, comme 
+/etc/passwd ou /var/log.
 
 Pourquoi /etc/passwd ?
-Parce que c’est un fichier présent sur tous les serveurs Linux.
+Parce que c’est un fichier présent sur tous les serveurs Linux qui 
+liste les utilisateurs. C'est la preuve que l'on peut sortir du 
+répertoire web.
 
-solution:
--utiliser une liste avec les pages possible d acces et rejeter le reste
--interdire certain caractères (.., /, etc...)
--desactiver allow_url_include qui permet de gerer les RFI
--utliser realpath() pour pour verifier que les fichier soit dans les bon dossiers 
+SOLUTIONS :
+1. Utiliser une "Whitelist" (liste blanche)
+   - Définir une liste des pages autorisées et rejeter tout le reste.
+
+2. Assainir les entrées (Sanitization)
+   - Interdire ou supprimer les caractères dangereux (.., /, etc.).
+
+3. Désactiver allow_url_include
+   - Empêche l'inclusion de fichiers distants (RFI).
+
+4. Utiliser realpath()
+   - Permet de vérifier que le fichier final se trouve bien dans le 
+     dossier autorisé avant de l'ouvrir.

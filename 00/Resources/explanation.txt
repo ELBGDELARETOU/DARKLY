@@ -1,12 +1,37 @@
-epxlication:
+AUTHENTIFICATION
 
-Les identifiants sont envoyés dans l’URL en utilisant une méthode GET et non POST,
-tout est donc visible dans l’URL. Il suffit de faire un script Python qui, en calquant l’URL,
-va en boucle envoyer des requêtes GET pour tester tout un tas de mots de passe depuis
-rockyou, qui est une base de données de mots de passe les plus souvent utilisés.
+Lors d'une tentative de connexion, les identifiants sont transmis via
+une requête HTTP GET. On le remarque dans l'URL :
 
-solution:
--utiliser POST et non GET
--etre en https
--2FA
--limiter le nombre d essaie de connexion
+URL : http://localhost:8080/?page=signin&username=a&password=a&Login=Login#
+
+
+L'attaque consiste à automatiser des tentatives de connexion en 
+utilisant des noms d'utilisateurs standards (admin, root, user) et 
+en testant une liste massive de mots de passe.
+
+On va donc créer un script python utilisant le fichier rockyou.txt qui
+contient les millions de mots de passe les plus courants.
+
+
+SOLUTIONS : 
+1. Utiliser la méthode POST au lieu de GET
+   - Car les paramètres sont envoyés dans le body de la requête 
+     et non dans l'URL.
+
+2. HTTPS
+   - HTTPS chiffre la communication de bout en bout, rendant 
+     l'interception des données illisible.
+
+3. Limiter le nombre de tentatives
+   - Pour bloquer les scripts de brute force. On limite le 
+     nombre d'essais autorisés par adresse IP ou par compte.
+
+4. Authentification à deux facteurs (2FA)
+   -  Ajoute une barrière physique. Même si le mot de passe est
+     découvert via rockyou.txt, l'accès reste impossible sans le deuxième code.
+
+5. Politique de mots de passe forts
+   - Imposer une longueur minimale et l'usage de caractères 
+     spéciaux rend l'utilisation de dictionnaires de mots de passe 
+     inefficace.

@@ -1,8 +1,24 @@
-explication :
+MANIPULATION DE PARAMÈTRES (SURVEY)
 
-Ici, le problème est que les valeurs ne sont pas protégées. On peut donc récupérer la requête
-et, en utilisant une commande curl, modifier la valeur qui, théoriquement, ne peut pas être supérieure
-à 10.
+EXPLICATION :
+Dans l'onglet "Survey", l'utilisateur peut noter un sujet avec une 
+valeur comprise entre 1 et 10. Cependant, cette restriction n'est 
+appliquée que sur l'interface graphique (côté client).
 
-solution :
-– toujours valider les données côté serveur
+En interceptant la requête via l'inspecteur (F12) et en utilisant une 
+commande CURL, il est possible de modifier le paramètre de la note 
+pour envoyer une valeur arbitraire bien supérieure à 10 (par exemple 
+1000). Le serveur accepte la donnée sans vérification, ce qui fausse 
+totalement les statistiques ou le fonctionnement du système.
+
+
+SOLUTIONS :
+1. Toujours valider les données côté serveur
+   - C'est la règle d'or : ne jamais faire confiance aux données 
+     provenant de l'utilisateur. Le code backend doit impérativement
+     vérifier que la valeur est un entier et  qu'il est compris dans
+     l'intervalle autorisé [1, 10].
+
+2. Utiliser des types de données stricts
+   - S'assurer que le champ reçu est bien traité comme un nombre 
+     et rejeter toute entrée incohérente ou hors limites.

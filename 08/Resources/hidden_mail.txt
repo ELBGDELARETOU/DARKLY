@@ -1,10 +1,37 @@
-explication :
-Ici, on peut tout simplement modifier l’adresse mail sur laquelle on reçoit le mail pour réinitialiser son mot de passe.
-Pour tester, il suffit de faire comme si on avait oublié son mot de passe, aller dans la section Network de l’inspecteur pour pouvoir
-récupérer la requête en curl et pouvoir modifier le mot de passe.
+MANIPULATION DE LA RÉCUPÉRATION DE COMPTE
 
-solution :
--2FA
--redemander l’email pour vérifier l’identité
--ne surtout pas utiliser de variable cachée pour une donnée aussi sensible que l’email de l’admin.
- hidden n’est pas du tout un mécanisme de sécurité.
+EXPLICATION :
+Ici, il est possible de modifier l’adresse email de destination lors 
+du processus de réinitialisation de mot de passe. 
+
+En simulant un oubli de mot de passe, on utilise l’onglet "Network" 
+de l’inspecteur (F12) pour intercepter la requête envoyée au serveur. 
+On récupère ensuite cette requête sous forme de commande CURL pour la 
+rejouer tout en modifiant le paramètre "mail".
+
+POURQUOI ÇA MARCHE ?
+L'application utilise probablement un champ de formulaire "hidden" 
+(caché) pour stocker l'email, ou bien elle accepte n'importe quelle 
+valeur provenant de la requête sans la vérifier. 
+
+SOLUTIONS :
+1. Ne jamais utiliser de variables cachées (Hidden) pour des données sensibles
+   - L'attribut "hidden" en HTML n'est ABSOLUMENT PAS un mécanisme de 
+     sécurité. N'importe quel utilisateur peut modifier sa valeur via 
+     l'inspecteur ou un proxy (Burp Suite, Curl).
+
+2. Vérification de l'identité côté serveur
+   - Le serveur doit uniquement recevoir l'identifiant (username). 
+     Il doit ensuite chercher l'email correspondant dans sa propre base 
+     de données interne pour l'envoi, sans laisser le client choisir 
+     la destination.
+
+3. Redemander l'email pour vérification
+   - Obliger l'utilisateur à saisir manuellement l'adresse email 
+     enregistrée sur le compte pour confirmer qu'il en est bien le 
+     propriétaire.
+
+4. Authentification à deux facteurs (2FA)
+   - Même si l'attaquant réussit à changer le mot de passe, l'accès 
+     lui sera refusé s'il ne possède pas le deuxième facteur 
+     (code SMS, App, etc.).

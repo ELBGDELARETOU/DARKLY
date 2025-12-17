@@ -1,27 +1,39 @@
-explication:
-Ici, en inspectant la page link tout en bas, on se rend compte que des commentaires ont été laissés.
-En suivant ce qui est demandé, on construit cette requête :
+MANIPULATION DES HEADERS
+
+EXPLICATION :
+En inspectant le code source de la page, on découvre des commentaires
+laissés par les développeurs. Ces commentaires donnent des indices sur
+des restrictions d'accès basées sur l'origine de l'utilisateur et son navigateur.
+
+Les indices trouvés imposent deux conditions :
+1. Provenir du site "https://www.nsa.gov/".
+2. Utiliser un navigateur spécifique nommé "ft_bornToSec".
+
+TEST AVEC CURL :
+On construit une requête en injectant les valeurs demandées dans les 
+headers correspondants :
 
 curl 'http://localhost:8080/index.php?page=b7e44c7a40c5f80139f0a50f3650fb2bd8d00b0d24667c4c2ca32c88e13b758f' \
-  --compressed \
   -H 'User-Agent: ft_bornToSec' \
-  -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' \
-  -H 'Accept-Language: en-US,en;q=0.5' \
-  -H 'Accept-Encoding: gzip, deflate, br, zstd' \
   -H 'Referer: https://www.nsa.gov/' \
-  -H 'Connection: keep-alive' \
-  -H 'Cookie: I_am_admin=68934a3e9455fa72420237eb05902327' \
-  -H 'Upgrade-Insecure-Requests: 1' \
-  -H 'Sec-Fetch-Dest: document' \
-  -H 'Sec-Fetch-Mode: navigate' \
-  -H 'Sec-Fetch-Site: same-origin' \
-  -H 'Sec-Fetch-User: ?1' \
-  -H 'Priority: u=0, i' \
-  -H 'Pragma: no-cache' \
-  -H 'Cache-Control: no-cache' | grep flag 
+  -H 'Cookie: I_am_admin=68934a3e9455fa72420237eb05902327' | grep flag
 
-On remplace le User-Agent par ft_bornToSec, car dans les commentaires on nous demande d’utiliser ce “browser”.
-Ensuite, on fait la même chose pour www.nsa.gov où l’on nous dit que nous venons de ce site, ce qui fait référence au header Referer.
+- User-Agent : Modifié pour simuler le "browser" ft_bornToSec.
+- Referer : Modifié pour faire croire au serveur que l'on arrive 
+  depuis le site de la NSA.
 
-solution :
-– ne pas laisser de commentaires qui peuvent aider à quoi que ce soit dans le code lisible par tout le monde
+SOLUTIONS :
+1. Nettoyer le code source (Commentaires)
+   - Ne jamais laisser de commentaires techniques, d'indices ou de 
+     données sensibles dans le code HTML/JS.
+
+2. Ne pas se fier aux en-têtes HTTP pour la sécurité
+   - Les headers comme "Referer" ou "User-Agent" ne doivent JAMAIS 
+     servir de mécanisme d'authentification ou de contrôle d'accès 
+     critique.
+
+3. Utiliser des mécanismes de contrôle robustes
+   - Pour restreindre l'accès, utiliser des sessions sécurisées, 
+     des jetons (tokens) ou une véritable authentification côté 
+     serveur plutôt que de se baser sur la provenance déclarée du 
+     navigateur.

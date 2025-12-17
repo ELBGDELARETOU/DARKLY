@@ -1,8 +1,34 @@
-explication :
+BRUTE FORCE SUR FORMULAIRE
 
-hypothèse 1 : la base de données n’est pas protégée contre l’overflow de commentaires
-hypothèse 2 : il y a un fichier qui a une place limitée et qui overflow
+EXPLICATION :
+Sur cette page, un formulaire permet de soumettre un nom et un 
+commentaire. En testant de nombreuses combinaisons de caractères et 
+de valeurs (Brute Force), on remarque un comportement anormal du 
+serveur.
 
-solution :
--limiter la taille du champs coter serveur ainsi que celle du nombre de commentaires
--ne jamais faire confiance au front end
+Certaines entrées spécifiques ou combinaisons de caractères 
+déclenchent l'affichage du flag. Par exemple :
+- Nom : "a" | Commentaire : "a"
+- Nom : "a" | Commentaire : (vide)
+Mais pas :
+- Nom : "q" | Commentaire : "q"
+
+Il n'y a pas de logique apparente liée au contenu, ce qui indique que 
+le système de validation est mal conçu ou qu'il contient des 
+conditions de test restées en production.
+
+SOLUTIONS :
+1. Vérifier et assainir systématiquement les données
+   - Le serveur doit vérifier rigoureusement chaque champ envoyé. 
+     Toute entrée ne correspondant pas au format attendu (ex: trop 
+     courte, caractères spéciaux interdits) doit être rejetée.
+
+2. Gérer les champs vides
+   - Ne jamais autoriser le traitement d'une requête si des champs 
+     obligatoires sont manquants ou vides. Une validation côté 
+     serveur est indispensable pour bloquer ces cas.
+
+4. Limitation de débit
+   - Comme pour le login, limiter le nombre de soumissions par minute 
+     pour empêcher un script de tester des milliers de combinaisons 
+     automatiquement.
