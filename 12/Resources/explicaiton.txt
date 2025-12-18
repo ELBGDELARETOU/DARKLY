@@ -29,7 +29,7 @@ Une fois cela fait, on obtient la liste des pages existantes mais non accessible
 Dans cette liste, ce qui nous intéresse est admin et robots.txt.
 En allant sur robots.txt, on voit deux lignes. On récupère la première, qui nous mène vers un site où l’on peut télécharger 
 un fichier nommé .htpasswd. Dans ce fichier, on trouve : "root:437394baff5aa33daa618be47b75cb49"
-Le mot de passe est hashé en MD5. Après déchiffrement, on obtient : qwerty123@.
+Le mot de passe est hashé en MD5. Après déchiffrement, on obtient : qwerty123@ .
 
 Il ne reste plus qu’à aller sur la page /admin/ et se connecter en tant que root.
 
